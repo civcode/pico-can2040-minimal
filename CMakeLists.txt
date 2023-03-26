@@ -23,11 +23,22 @@ set(SRC
    ${CMAKE_SOURCE_DIR}/lib/can2040/src/can2040.c
 )
 
-# add_library(can2040 
-#    ${can2040_SRC}
-# )
-# target_link_libraries(can2040 pico_base_headers)
-#target_sources(can2040 INTERFACE ${can2040_SRC})
+set(can2040_SRC
+   ${CMAKE_SOURCE_DIR}/lib/can2040/src/can2040.c
+)
+
+add_library(can2040 
+   ${can2040_SRC}
+)
+
+target_link_libraries(can2040 
+   pico_base_headers
+   pico_stdlib 
+   hardware_pio 
+   hardware_dma 
+   cmsis_core
+)
+# target_sources(can2040 ${can2040_SRC})
 
 #target_include_directories(can2040 ERFACE ${CMAKE_CURRENT_LIST_DIR}/src)
 #target_link_libraries(can2040 INTERFACE pico_base_headers hardware_pio hardware_dma cmsis_core)
@@ -48,7 +59,8 @@ add_executable(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/src/main.c ${SRC})
 pico_add_extra_outputs(${PROJECT_NAME})
 
 # Link to pico_stdlib (gpio, time, etc. functions)
-target_link_libraries(${PROJECT_NAME} pico_base_headers pico_stdlib hardware_pio hardware_dma cmsis_core)
+# target_link_libraries(${PROJECT_NAME} pico_base_headers pico_stdlib hardware_pio hardware_dma cmsis_core)
+target_link_libraries(${PROJECT_NAME} pico_stdlib cmsis_core can2040)
 
 # Enable usb output, disable uart output
 #pico_enable_stdio_usb(${PROJECT_NAME} 1)
