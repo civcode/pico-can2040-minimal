@@ -27,11 +27,16 @@ set(can2040_SRC
    ${CMAKE_SOURCE_DIR}/lib/can2040/src/can2040.c
 )
 
-add_library(can2040 
+add_library(can2040 INTERFACE
    ${can2040_SRC}
 )
 
-target_link_libraries(can2040 
+target_sources(can2040 INTERFACE ${can2040_SRC})
+target_include_directories(can2040 INTERFACE 
+   ${CMAKE_SOURCE_DIR}/lib/can2040/src
+)
+
+target_link_libraries(can2040 INTERFACE 
    pico_base_headers
    pico_stdlib 
    hardware_pio 
