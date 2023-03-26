@@ -9,8 +9,8 @@
 
 static struct can2040 cbus;
 
-static void can2040_cb(struct can2040 *cd, uint32_t notify, struct can2040_msg *msg)
-{
+static void can2040_cb(struct can2040 *cd, uint32_t notify, struct can2040_msg *msg) {
+
     // Add message processing code here...
     switch (notify) {
         case CAN2040_NOTIFY_RX:
@@ -25,16 +25,15 @@ static void can2040_cb(struct can2040 *cd, uint32_t notify, struct can2040_msg *
     }
 }
 
-static void PIOx_IRQHandler(void)
-{
+static void PIOx_IRQHandler(void) {
     can2040_pio_irq_handler(&cbus);
 }
 
-void canbus_setup(void)
+void canbus_setup(void) 
 {
     uint32_t pio_num = 0;
-    uint32_t sys_clock = 125000000, bitrate = 250000;
-    //uint32_t gpio_rx = 4, gpio_tx = 5;
+    uint32_t sys_clock = 125E6;
+    uint32_t bitrate = 250E3;
     uint32_t gpio_rx = CAN_GPIO_RX;
     uint32_t gpio_tx = CAN_GPIO_TX;
 
@@ -53,14 +52,18 @@ void canbus_setup(void)
 
 void can_transmit() {
     static uint8_t val;
-    uint8_t data[8] = {42,0,0,0,0,0,0,0};
-    data[0] = val++;
-    struct can2040_msg msg = {.id = 0x18FFA0f9 | CAN2040_ID_EFF,
-                              .dlc = 8,
-                              .data = data};
+    //uint8_t data[8] = {42,0,0,0,0,0,0,0};
+    uint8_t data[8] = {0};
 
+    data[0] = val++;
+    struct can2040_msg msg;
+    
+    // struct can2040_msg msg = {.id = 0x18FFA0f9 | CAN2040_ID_EFF,
+    //                           .dlc = 8};
+
+    msg.id = 0x18FFA0f9 | CAN2040_ID_EFF;
+    msg.dlc = 8;
     memcpy(msg.data, data, 8);
-    //msg.data = &data[0];
 
     int ret = can2040_transmit(&cbus, &msg);
 
@@ -69,28 +72,46 @@ void can_transmit() {
 
 int main() {
 
-   const uint led_pin = 25;
+    const uint led_pin = 25;
 
-   // Initialize LED pin
-   gpio_init(led_pin);
-   gpio_set_dir(led_pin, GPIO_OUT);
+    // Initialize LED pin
+    gpio_init(led_pin);
+    gpio_set_dir(led_pin, GPIO_OUT);
 
-   // Initialize chosen serial port
-   stdio_init_all();
+    // Initialize chosen serial port
+    stdio_init_all();
 
-   canbus_setup();
-   //can2040_start(&cbus, 125E6, 250000, CAN_GPIO_RX, CAN_GPIO_TX);
+    // Start can2040
+    canbus_setup();
 
-   // Loop forever
-   size_t cnt = 0;
-   while (true) {
+    // Loop forever
+    size_t cnt = 0;
+    while (true) {
 
-       // Blink LED
-       printf("%d Blinking!\n", cnt++);
-       gpio_put(led_pin, true);
-       sleep_ms(1000);
-       gpio_put(led_pin, false);
-       sleep_ms(1000);
-       can_transmit();
-   }
+        // Blink LED
+        printf("%d Blinking!\n", cnt++);
+        gpio_put(led_pin, true);
+        sleep_ms(1000);
+        gpio_put(led_pin, false);
+        sleep_ms(1000);
+        can_transmit();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,7 +14,6 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(
    ${CMAKE_SOURCE_DIR}/include
    ${CMAKE_SOURCE_DIR}/lib/can2040/src
-   #${CMAKE_SOURCE_DIR}/../../../pico/pico-sdk/src/rp2_common/cmsis/stub/CMSIS/Device/RaspberryPi/RP2040/Include
 )
 
 set(SRC
