@@ -49,7 +49,7 @@ pico_generate_pio_header(can2040 ${CMAKE_SOURCE_DIR}/lib/can2040/pio/can2040.pio
 
 
 add_executable(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/src/main.c ${SRC})
-target_link_libraries(${PROJECT_NAME} pico_stdlib cmsis_core can2040)
+target_link_libraries(${PROJECT_NAME} pico_stdlib cmsis_core hardware_i2c can2040)
 
 # Create map/bin/hex/uf2 files
 pico_add_extra_outputs(${PROJECT_NAME})
